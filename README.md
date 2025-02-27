@@ -1,59 +1,97 @@
+---
 # FleetPay API
 
-FleetPay API is a robust backend service designed to manage ride-sharing fleet operations, earnings, and driver payments.
+**FleetPay API** is a robust backend service designed to manage ride-sharing fleet operations, earnings, and driver payments.
+
+---
 
 ## Overview
 
 The API provides endpoints to manage:
-- Platform earnings from multiple ride-sharing services (Uber, Bolt, Heetch)
-- Driver profiles and earnings
-- Commission settings and calculations
-- Payment tracking and reporting
+
+- **Platform Earnings**: Import and track earnings data from multiple ride-sharing services (e.g., Uber, Bolt, Heetch)
+- **Driver Profiles & Earnings**: Manage driver details and monitor individual earnings
+- **Commission Settings**: Configure and calculate commissions
+- **Payment Tracking**: Track and report payment statuses
+
+---
 
 ## Core Features
 
-### Platform Earnings Management
-- Import earnings data from multiple ride-sharing platforms
-- Track weekly earnings per driver
-- Validate and manage earning records
-- Calculate commissions and due amounts
+### 1. Platform Earnings Management
+- **Data Import:** Import earnings data from various ride-sharing platforms.
+- **Weekly Tracking:** Monitor weekly earnings per driver.
+- **Record Management:** Validate and manage earning records.
+- **Commission Calculation:** Automatically calculate commissions and due amounts.
 
-### Driver Management
-- Create and manage driver profiles
-- Track individual driver earnings
-- Monitor performance across platforms
+### 2. Driver Management
+- **Profile Management:** Create and update driver profiles.
+- **Earnings Tracking:** Record and review individual driver earnings.
+- **Performance Monitoring:** Assess driver performance across platforms.
 
-### Commission System
-- User-specific commission rates
-- Automatic commission calculations
-- Flexible commission management
+### 3. Commission System
+- **Custom Rates:** Set user-specific commission rates.
+- **Automated Calculations:** Handle commission computations automatically.
+- **Flexible Options:** Easily adjust commission settings as needed.
 
-### Reporting
-- Weekly earnings reports
-- Platform-specific performance tracking
-- Payment status monitoring
+### 4. Reporting
+- **Weekly Reports:** Generate detailed weekly earnings reports.
+- **Platform Insights:** Analyze performance data by platform.
+- **Payment Monitoring:** Keep track of payment statuses.
+
+---
 
 ## API Endpoints
 
 ### Platform Earnings
-- `GET /api/platform-earnings` - List all platform earnings
-- `POST /api/platform-earnings` - Create new earning record
-- `PUT /api/platform-earnings/{id}` - Update earning record
-- `DELETE /api/platform-earnings/{id}` - Delete earning record
+- **List Earnings:**  
+  `GET /api/platform-earnings`  
+  _Retrieve all platform earnings records._
+
+- **Create Record:**  
+  `POST /api/platform-earnings`  
+  _Create a new earning record._
+
+- **Update Record:**  
+  `PUT /api/platform-earnings/{id}`  
+  _Update an existing earning record._
+
+- **Delete Record:**  
+  `DELETE /api/platform-earnings/{id}`  
+  _Delete an earning record._
 
 ### Reports
-- `GET /api/reports/platforms/import/status/{weekStartDate}` - Get import status
-- `POST /api/reports/platforms/import/{platform}` - Import platform data
-- `DELETE /api/reports/platforms/import/{platform}/{weekStartDate}` - Delete platform data
+- **Import Status:**  
+  `GET /api/reports/platforms/import/status/{weekStartDate}`  
+  _Get the import status for a given week._
+
+- **Import Platform Data:**  
+  `POST /api/reports/platforms/import/{platform}`  
+  _Initiate import of platform data._
+
+- **Delete Platform Data:**  
+  `DELETE /api/reports/platforms/import/{platform}/{weekStartDate}`  
+  _Remove platform data for the specified week._
 
 ### Settings
-- `GET /api/settings/commission` - Get commission settings
-- `POST /api/settings/commission` - Update commission settings
+- **Get Commission Settings:**  
+  `GET /api/settings/commission`  
+  _Retrieve current commission settings._
+
+- **Update Commission Settings:**  
+  `POST /api/settings/commission`  
+  _Modify commission settings._
+
+---
 
 ## Authentication
 
-The API uses Sanctum for authentication (currently commented out for development).
+The API uses **Sanctum** for authentication _(currently commented out for development)_.
+
+---
 
 ## Error Handling
 
-All endpoints return appropriate HTTP status codes and error messages in JSON format.
+All endpoints return appropriate HTTP status codes and error messages in **JSON** format.
+
+---
