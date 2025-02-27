@@ -1,5 +1,5 @@
 ---
-**FleetPay API** is a robust backend service designed to manage ride-sharing fleet operations, earnings, and driver payments.
+FleetPay API is a robust backend service designed to manage ride-sharing fleet operations, earnings, and driver payments.
 
 ---
 
