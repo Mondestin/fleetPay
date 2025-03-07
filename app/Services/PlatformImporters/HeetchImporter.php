@@ -43,7 +43,7 @@ class HeetchImporter implements PlatformImporterInterface
                 'platform' => 'heetch'
             ],
             [
-                'created_by' => 'user1',
+                'created_by' => $earningData['user'],
                 'earnings' => $earningData['totalRevenue'] ?? 0,
                 'commission_amount' => $commission,
                 'validated' => 1,

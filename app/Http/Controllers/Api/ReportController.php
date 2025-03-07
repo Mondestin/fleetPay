@@ -110,7 +110,6 @@ class ReportController extends Controller
 
         return response()->json([
             'message' => 'Platform earnings imported successfully',
-            'data' => $results
         ], 201);
     }
 
