@@ -72,7 +72,7 @@ class PlatformEarningController extends Controller
 
         // Paginate the results manually
         $page = request('page', 1);
-        $perPage = request('per_page', 20);
+        $perPage = request('per_page', 100);
         $items = $earnings->forPage($page, $perPage);
         
         return response()->json([
@@ -83,10 +83,6 @@ class PlatformEarningController extends Controller
         ]);
     }
 
-    public function store(Request $request)
-    {
-       return response()->json( "Platform earnings created successfully");
-    }
 
     public function show(Request $request)
     {

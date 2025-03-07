@@ -84,7 +84,40 @@ The API provides endpoints to manage:
 
 ## Authentication
 
-The API uses **Sanctum** for authentication _(currently commented out for development)_.
+The API uses Laravel Sanctum for token-based authentication.
+
+### Endpoints
+
+- **Login:**
+  `POST /api/login`
+  ```json
+  {
+    "email": "user@example.com",
+    "password": "password",
+    "device_name": "iPhone 12"
+  }
+  ```
+
+- **Logout:**
+  `POST /api/logout`
+  _Requires authentication token_
+
+- **Get Current User:**
+  `GET /api/me`
+  _Requires authentication token_
+
+### Using Authentication
+
+1. Obtain token by logging in
+2. Include token in subsequent requests:
+   ```
+   Authorization: Bearer <your-token>
+   ```
+
+### Error Responses
+
+- **401 Unauthorized**: Invalid or missing token
+- **403 Forbidden**: Valid token but insufficient permissions
 
 ---
 

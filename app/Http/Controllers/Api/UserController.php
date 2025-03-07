@@ -7,6 +7,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\UserCreated;
 
 class UserController extends Controller
 {
@@ -53,6 +55,16 @@ class UserController extends Controller
         $validated['password'] = Hash::make("password");
         try {
             $user = User::create($validated);
+
+            //send email to user
+          try {
+            Mail::to($user->email)->send(new UserCreated($user));
+          } catch (\Exception $e) {
+            logger("Error sending email to user: " . $e->getMessage());
+          }
+
+
+
         } catch (\Exception $e) {
             logger($e->getMessage());
             return response()->json(['message' => $e->getMessage()], 404);

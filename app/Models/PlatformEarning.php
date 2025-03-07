@@ -15,6 +15,7 @@ class PlatformEarning extends Model
         'week_start_date',
         'earnings',
         'created_by',
+        'commission_amount',
         'validated',
         'status'
     ];

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->date('week_start_date');
             $table->decimal('earnings', 10, 2);
             $table->foreignUuid('created_by')->constrained('users')->onDelete('cascade');
+            $table->decimal('commission_amount', 10, 2);
             $table->enum('status', ['pending', 'paid'])->default('pending');
             $table->boolean('validated')->default(false);
             $table->timestamps();
