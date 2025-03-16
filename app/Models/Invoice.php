@@ -11,12 +11,11 @@ class Invoice extends Model
 
     protected $fillable = [
         'invoice_number',
-        'user_id',
+        'subscription_id',
         'amount',
         'status',
         'issue_date',
-        'due_date',
-        'created_by',
+        'due_date'
     ];
 
     protected $casts = [
@@ -25,13 +24,14 @@ class Invoice extends Model
         'amount' => 'decimal:2',
     ];
 
-    public function user()
+    /**
+     * Get the subscription associated with the invoice.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function subscription()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Subscription::class);
     }
 
-    public function createdBy()
-    {
-        return $this->belongsTo(User::class, 'created_by');
-    }
 } 

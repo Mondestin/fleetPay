@@ -40,6 +40,7 @@ Route::middleware('auth:sanctum')->group(function () {
     
     // Subscriptions
     Route::apiResource('subscriptions', SubscriptionController::class);
+    Route::get('subscriptions/{user}/current', [SubscriptionController::class, 'current']);
 
     // Settings
     Route::post('settings/commission', [SettingController::class, 'postCommission']);
@@ -47,4 +48,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Users
     Route::apiResource('users', UserController::class);
+    Route::post('users/{user}/password', [UserController::class, 'updatePassword']);
+    Route::put('users/{user}/profile', [UserController::class, 'updateProfile']);
 });

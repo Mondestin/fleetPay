@@ -15,9 +15,9 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             DriverSeeder::class,
             PlatformEarningSeeder::class,
-            InvoiceSeeder::class,
-            SettingSeeder::class,
             SubscriptionSeeder::class,
+            InvoiceSeeder::class,
+            SettingSeeder::class
         ]);
     }
 }

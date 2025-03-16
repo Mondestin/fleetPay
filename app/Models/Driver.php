@@ -9,6 +9,11 @@ class Driver extends Model
 {
     use HasUuids;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var list<string>
+     */
     protected $fillable = [
         'first_name',
         'driver_uber_id',
@@ -19,6 +24,11 @@ class Driver extends Model
         'status',
     ];
 
+    /**
+     * Get all platform earnings for the driver.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function platformEarnings()
     {
         return $this->hasMany(PlatformEarning::class);

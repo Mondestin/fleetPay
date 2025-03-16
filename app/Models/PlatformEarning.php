@@ -25,11 +25,21 @@ class PlatformEarning extends Model
         'validated' => 'boolean',
     ];
 
+    /**
+     * Get the driver associated with the platform earning.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function driver()
     {
         return $this->belongsTo(Driver::class);
     }
 
+    /**
+     * Get the user who created the platform earning.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by');

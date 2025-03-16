@@ -11,12 +11,11 @@ return new class extends Migration
         Schema::create('invoices', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('invoice_number', 20)->unique();
-            $table->foreignUuid('user_id')->constrained();
+            $table->foreignUuid('subscription_id')->constrained('subscriptions')->onDelete('cascade');
             $table->decimal('amount', 10, 2);
             $table->enum('status', ['paid', 'pending', 'overdue'])->default('pending');
             $table->date('issue_date');
             $table->date('due_date');
-            $table->foreignUuid('created_by')->constrained('users');
             $table->timestamps();
         });
     }

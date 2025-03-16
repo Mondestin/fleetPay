@@ -7,28 +7,16 @@ use App\Models\Invoice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-
+use App\Models\User;
+use App\Models\Subscription;
 class InvoiceController extends Controller
 {
     public function index()
     {
-        $invoices = Invoice::query()
-            ->with(['user', 'createdBy'])
-            ->when(request('status'), fn($q, $status) => $q->where('status', $status))
-            ->when(request('search'), function($q, $search) {
-                $q->whereHas('user', function($q) use ($search) {
-                    $q->where('first_name', 'like', "%{$search}%")
-                      ->orWhere('last_name', 'like', "%{$search}%")
-                      ->orWhere('email', 'like', "%{$search}%");
-                })
-                ->orWhere('invoice_number', 'like', "%{$search}%");
-            })
-            ->when(request('from_date'), fn($q, $date) => $q->where('issue_date', '>=', $date))
-            ->when(request('to_date'), fn($q, $date) => $q->where('issue_date', '<=', $date))
-            ->orderBy(request('sort_by', 'issue_date'), request('sort_direction', 'desc'))
-            ->paginate(request('per_page', 15));
+        //get all invoices with the subscription and user
+        $invoices = Subscription::with('invoices')->with('user')->get();
 
-            
+        logger($invoices);  
         return response()->json($invoices);
     }
 
@@ -63,12 +51,19 @@ class InvoiceController extends Controller
     public function show(Request $request)
     {
         try {
-            logger()->info("Invoice ID: " . $request->invoice);
-            $invoice = Invoice::findOrFail($request->invoice);
-            return response()->json($invoice->load(['user', 'createdBy']));
+           
+          
+            //get all invoices for the user
+            $invoices = Invoice::where('user_id', $request->invoice)->get();
+            logger("invoices: " . $invoices);
+            if(!$invoices) {
+                return response()->json(['error' => 'Invoice not found'], 404);
+            }
+            return response()->json($invoices);
+
         } catch (\Exception $e) {
             logger($e->getMessage());
-            return response()->json(['error' => 'Invoice not found'], 404);
+            return response()->json(['error' => 'Error fetching invoice'], 404);
         }
     }
 

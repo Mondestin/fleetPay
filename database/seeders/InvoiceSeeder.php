@@ -13,22 +13,22 @@ class InvoiceSeeder extends Seeder
             [
                 'id' => 'inv1',
                 'invoice_number' => 'INV-20240217-ABCD',
-                'user_id' => 'user1',
+                'subscription_id' => 'sub1',
                 'amount' => 1500.00,
                 'status' => 'pending',
                 'issue_date' => '2024-02-17',
                 'due_date' => '2024-03-17',
-                'created_by' => 'user1',
+          
             ],
             [
                 'id' => 'inv2',
                 'invoice_number' => 'INV-20240217-EFGH',
-                'user_id' => 'user2',
+                'subscription_id' => 'sub2',
                 'amount' => 2000.00,
                 'status' => 'paid',
                 'issue_date' => '2024-02-17',
                 'due_date' => '2024-03-17',
-                'created_by' => 'user1',
+              
             ],
         ];
 

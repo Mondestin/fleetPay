@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Subscription;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use App\Models\User;
 
 class SubscriptionController extends Controller
 {
@@ -60,19 +61,6 @@ class SubscriptionController extends Controller
         return response()->json($subscription->load('user'), 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Request $request)
-    {
-        try {
-            $subscription = Subscription::findOrFail($request->subscription);
-            return response()->json($subscription->load('user'));
-        } catch (\Exception $e) {
-            logger($e->getMessage());
-            return response()->json(['error' => 'Subscription not found'], 404);
-        }
-    }
 
     /**
      * Update the specified resource in storage.
@@ -117,5 +105,19 @@ class SubscriptionController extends Controller
         } catch (\Exception $e) {
             return response()->json(['error' => 'Subscription not found'], 404);
         }
+    }
+    /**
+     * Display the current subscription for a user.
+     *
+     * @param Request $request The HTTP request object.
+     * @param User $user The user to get the current subscription for.
+     * @return \Illuminate\Http\JsonResponse The current subscription for the user.
+     */
+    public function current(Request $request)
+    {
+        $user = $request->user();
+        $subscription = Subscription::where('user_id', $user->id)->where('status', 'active')->with('invoices')->first();
+        logger($subscription);
+        return response()->json($subscription);
     }
 }

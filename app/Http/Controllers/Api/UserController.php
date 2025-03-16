@@ -126,4 +126,66 @@ class UserController extends Controller
             return response()->json(['message' => 'User not found'], 404);
         }
     }
+
+    public function updatePassword(Request $request, User $user)
+    {
+        logger($request->user());
+   
+        //check if the current password is correct
+        $user = User::findOrFail($request->user);
+        if (!Hash::check($request->current_password, $user->password)) {
+            logger("Current password is incorrect");
+
+            $errors = [
+                'current_password' => 'Le mot de passe actuel est incorrect'
+            ];
+            return response()->json(['errors' => $errors], 422);
+
+        }
+        //check if the new password is correct
+        if ($request->new_password !== $request->confirm_password) {
+            $errors = [
+                'confirm_password' => 'Le mot de passe et la confirmation ne correspondent pas'
+            ];
+            return response()->json(['errors' => $errors], 422);
+        }
+        //check if the new password is different from the current password
+        if ($request->new_password === $request->current_password) {
+            $errors = [
+                'new_password' => 'Le nouveau mot de passe ne peut pas être le même que le mot de passe actuel'
+            ];
+            return response()->json(['errors' => $errors], 422);
+        }
+
+        try {
+            $user = User::findOrFail($request->user);
+            $user->password = Hash::make($request->new_password);
+            $user->save();
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Utilisateur non trouvé'], 404);
+        }
+
+        return response()->json(['message' => 'Mot de passe mis à jour avec succès']);
+    }
+
+    public function updateProfile(Request $request, User $user)
+    {
+        logger($request->user());
+
+        $validated = $request->validate([
+            'first_name' => 'required|string|max:100',
+            'last_name' => 'required|string|max:100',
+            'email' => ['required', 'email', Rule::unique('users')->ignore($request->user)],
+            'phone_number' => 'nullable|string|max:20',
+        ]);
+
+        try {
+            $user = User::findOrFail($request->user);
+            $user->update($validated);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Utilisateur non trouvé'], 404);
+        }
+
+        return response()->json(['message' => 'Profil mis à jour avec succès']);
+    }
 } 

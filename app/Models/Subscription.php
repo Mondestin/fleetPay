@@ -24,8 +24,23 @@ class Subscription extends Model
         'amount' => 'decimal:2',
     ];
 
+    /**
+     * Get the user associated with the subscription.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get all invoices for the subscription.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class);
     }
 } 

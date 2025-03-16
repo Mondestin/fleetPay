@@ -52,28 +52,43 @@ class User extends Authenticatable
         ];
     }
 
-    public function subscriptions()
+
+    /**
+     * Get the current subscription for the user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function subscription()
     {
-        return $this->hasMany(Subscription::class);
+        return $this->hasOne(Subscription::class)->where('status', 'active');
     }
 
-    public function createdInvoices()
-    {
-        return $this->hasMany(Invoice::class, 'created_by');
-    }
-
-    public function invoices()
-    {
-        return $this->hasMany(Invoice::class, 'user_id');
-    }
-
+    /**
+     * Get all platform earnings for the user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function platformEarnings()
     {
         return $this->hasMany(PlatformEarning::class, 'created_by');
     }
 
+    /**
+     * Get all settings for the user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function settings()
     {
         return $this->hasMany(Setting::class);
+    }
+    /**
+     * Get the subscription with all invoices for the user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function subscriptionWithInvoices()
+    {
+        return $this->subscription()->with('invoices');
     }
 }
