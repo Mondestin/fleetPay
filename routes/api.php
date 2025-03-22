@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\ReportController;
 use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\SubscriptionController;
+use App\Http\Controllers\Api\CompanyController;
 use Illuminate\Support\Facades\Route;
 
 // Public routes
@@ -50,4 +51,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('users', UserController::class);
     Route::post('users/{user}/password', [UserController::class, 'updatePassword']);
     Route::put('users/{user}/profile', [UserController::class, 'updateProfile']);
+
+    // Company routes
+    Route::get('/companies/{user}', [CompanyController::class, 'show']);
+    Route::put('/companies/{user}', [CompanyController::class, 'update']);
+
 });

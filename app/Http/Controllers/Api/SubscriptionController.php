@@ -116,8 +116,13 @@ class SubscriptionController extends Controller
     public function current(Request $request)
     {
         $user = $request->user();
-        $subscription = Subscription::where('user_id', $user->id)->where('status', 'active')->with('invoices')->first();
-        logger($subscription);
+        try {
+            $subscription = Subscription::where('user_id', $user->id)->with('invoices')->first();
+        } catch (\Exception $e) {
+            logger($e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+     
         return response()->json($subscription);
     }
 }

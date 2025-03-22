@@ -91,4 +91,14 @@ class User extends Authenticatable
     {
         return $this->subscription()->with('invoices');
     }
+
+    /**
+     * Get the company for the user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function company()
+    {
+        return $this->hasOne(Company::class);
+    }
 }
