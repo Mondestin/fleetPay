@@ -16,27 +16,36 @@ use App\Services\PlatformImporters\HeetchImporter;
 class ReportController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Get platform earnings status
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request)
     {
+        // Get the week start date from the request
         $weekStartDate = $request->weekStartDate;
+        // Calculate the week end date
         $weekEndDate = date('Y-m-d', strtotime($weekStartDate . ' + 6 days'));
 
+        // Get all platforms
         $platforms = ['uber', 'bolt', 'heetch'];
         $results = [];
         foreach ($platforms as $platform) {
-         
+
+
+            // Get platform earnings for the specified week and platform for the current user
             $platformEarning = PlatformEarning::whereBetween('week_start_date', [$weekStartDate, $weekEndDate])
-                                                ->where('platform', $platform)->first();
-            
+                                                ->where('platform', $platform)
+                                                ->where('created_by', $request->user()->id)
+                                                ->first();
+            // If there is no platform earnings for the specified week and platform for the current user, add it to the results
             if (!$platformEarning) {
                 $results[] = [
                     'platform' => $platform,
                     'uploaded' => false,
                     'weekStartDate' => $weekStartDate
                 ];
-                
+            // If there is platform earnings for the specified week and platform for the current user, add it to the results
             } else {
                 $results[] = [
                     'platform' => $platform,
@@ -46,7 +55,7 @@ class ReportController extends Controller
                 
             }
         }
-        
+        // Return the results
         return response()->json([
             'message' => 'Platform earnings import status',
             'data' => $results
@@ -54,35 +63,50 @@ class ReportController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove imported platform earnings
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(Request $request )
     {
+        // Get the week start date from the request
         $weekStartDate = $request->weekStartDate;
+        // Get the platform from the request
         $platform = $request->platform;
-        
+        // Calculate the week end date
         $weekEndDate = date('Y-m-d', strtotime($weekStartDate . ' + 6 days'));
-        logger($weekEndDate);
+       
         try {
+            // Delete platform earnings for the specified week and platform for the current user
             PlatformEarning::whereBetween('week_start_date', [$weekStartDate, $weekEndDate])
-                                            ->where('platform', $platform)->delete();
+                                            ->where('platform', $platform)
+                                            ->where('created_by', $request->user()->id)
+                                            ->delete();
         } catch (\Exception $e) {
             logger($e);
             return response()->json([
-                'message' => 'Platform earnings not found'
+                'message' => 'Platform earnings n\'ont pas été supprimées'
             ], 404);
         }
       
         return response()->json([
-            'message' => 'Platform earnings deleted'
+            'message' => 'Platform earnings supprimées'
         ], 204);
     }
 
+    /**
+     * Import platform earnings per platform (uber, bolt, heetch)
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function importPlatformEarnings(Request $request)
     {
+        // Get the platform from the request
         $platform = strtolower($request->platform);
+        // Get the results
         $results = [];
-
+        // Get the user id
+        $user = $request->user()->id;
 
         // Get the appropriate importer
         $importer = match($platform) {
@@ -96,11 +120,11 @@ class ReportController extends Controller
         $driversData = collect($request->data)
             ->whereNotNull('firstName')
             ->values();
-        logger($driversData);
+        
         foreach ($driversData as $driverData) {
             try {
-                $driver = $importer->importDriver($driverData);
-                $earning = $importer->importEarnings($driver, $driverData);
+                $driver = $importer->importDriver($driverData, $user);
+                $earning = $importer->importEarnings($driver, $driverData, $user);
                 $results[] = $earning;
             } catch (\Exception $e) {
                 logger("Error importing driver: " . $e->getMessage());
@@ -109,7 +133,7 @@ class ReportController extends Controller
         }
 
         return response()->json([
-            'message' => 'Platform earnings imported successfully',
+            'message' => 'Platform earnings ont été importées avec succès',
         ], 201);
     }
 

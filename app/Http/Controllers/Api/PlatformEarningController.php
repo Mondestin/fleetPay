@@ -9,10 +9,11 @@ use Illuminate\Validation\Rule;
 use App\Models\Setting;
 class PlatformEarningController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $earnings = PlatformEarning::query()
             ->with(['driver', 'createdBy'])
+            ->where('created_by', $request->user()->id)
             ->when(request('driver_id'), fn($q, $driverId) => $q->where('driver_id', $driverId))
             ->when(request('platform'), fn($q, $platform) => $q->where('platform', $platform))
             ->when(request('validated'), fn($q, $validated) => $q->where('validated', $validated))
@@ -75,6 +76,7 @@ class PlatformEarningController extends Controller
         $perPage = request('per_page', 100);
         $items = $earnings->forPage($page, $perPage);
         
+        logger($earnings);
         return response()->json([
             'data' => $items,
             'current_page' => (int) $page,

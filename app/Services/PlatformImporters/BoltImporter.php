@@ -9,7 +9,13 @@ use App\Helpers\NameCheck;
 
 class BoltImporter implements PlatformImporterInterface
 {
-    public function importDriver(array $driverData): Driver
+    /**
+     * Import a driver from Bolt
+     * @param array $driverData
+     * @param string $user
+     * @return Driver
+     */
+    public function importDriver(array $driverData, string $user): Driver
     {
         $fullName = $driverData['fullName'];
         $matchedDrivers = [];
@@ -40,11 +46,19 @@ class BoltImporter implements PlatformImporterInterface
             'last_name' => $driverData['lastName'],
             'full_name' => $driverData['fullName'],
             'email' => $driverData['email'] ?? null,
-            'phone_number' => $driverData['phoneNumber'] ?? null
+            'phone_number' => $driverData['phoneNumber'] ?? null,
+            'user_id' => $user
         ]);
     }
 
-    public function importEarnings(Driver $driver, array $earningData): PlatformEarning
+    /**
+     * Import earnings from Bolt
+     * @param Driver $driver
+     * @param array $earningData
+     * @param string $user
+     * @return PlatformEarning
+     */
+    public function importEarnings(Driver $driver, array $earningData, string $user): PlatformEarning
     {
         $commission = Setting::where('name', 'commission')->first()->value;
 

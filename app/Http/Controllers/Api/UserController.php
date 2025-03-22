@@ -12,6 +12,11 @@ use App\Mail\UserCreated;
 
 class UserController extends Controller
 {
+    /**
+     * Get all users
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function index(Request $request)
     {
         $users = User::query()
@@ -32,6 +37,11 @@ class UserController extends Controller
         return response()->json($users);
     }
 
+    /**
+     * Store a new user
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function store(Request $request)
     {
    
@@ -72,6 +82,12 @@ class UserController extends Controller
         return response()->json($user, 201);
     }
 
+    /**
+     * Show the user
+     * @param Request $request
+     * @param User $user
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function show(Request $request)
     {
         try {   
@@ -83,6 +99,12 @@ class UserController extends Controller
         return response()->json($user);
     }
 
+    /**
+     * Update the user
+     * @param Request $request
+     * @param User $user
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function update(Request $request, User $user)
     {
         $validated = $request->validate([
@@ -111,6 +133,12 @@ class UserController extends Controller
         return response()->json($user);
     }
 
+    /**
+     * Delete the user
+     * @param Request $request
+     * @param User $user
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function destroy(Request $request)
     {
         try {
@@ -127,6 +155,12 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Update the user's password
+     * @param Request $request
+     * @param User $user
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function updatePassword(Request $request, User $user)
     {
         logger($request->user());
@@ -168,10 +202,15 @@ class UserController extends Controller
         return response()->json(['message' => 'Mot de passe mis à jour avec succès']);
     }
 
+    /**
+     * Update the user's profile
+     * @param Request $request
+     * @param User $user
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function updateProfile(Request $request, User $user)
     {
-        logger($request->user());
-
+        
         $validated = $request->validate([
             'first_name' => 'required|string|max:100',
             'last_name' => 'required|string|max:100',

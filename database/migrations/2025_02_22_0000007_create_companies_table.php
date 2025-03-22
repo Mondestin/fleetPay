@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('address')->nullable();
             $table->string('phone')->nullable();
             $table->string('status')->default('active');
-            $table->string('logo')->nullable();
+            $table->longText('logo')->nullable();
             $table->timestamps();
         });
     }

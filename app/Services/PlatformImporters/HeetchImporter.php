@@ -9,7 +9,7 @@ use App\Helpers\NameCheck;
 
 class HeetchImporter implements PlatformImporterInterface
 {
-    public function importDriver(array $driverData): Driver
+    public function importDriver(array $driverData, string $user): Driver
     {
         $fullName = $driverData['fullName'];
         $found = false;
@@ -28,11 +28,12 @@ class HeetchImporter implements PlatformImporterInterface
             'last_name' => ($nameParts[1] ?? '') . ' ' . ($nameParts[2] ?? ''),
             'full_name' => $fullName,
             'email' => $driverData['email'] ?? null,
-            'phone_number' => $driverData['phoneNumber'] ?? null
+            'phone_number' => $driverData['phoneNumber'] ?? null,
+            'user_id' => $user
         ]);
     }
 
-    public function importEarnings(Driver $driver, array $earningData): PlatformEarning
+    public function importEarnings(Driver $driver, array $earningData, string $user): PlatformEarning
     {
         $commission = Setting::where('name', 'commission')->first()->value;
 

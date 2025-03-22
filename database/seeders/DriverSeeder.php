@@ -18,6 +18,7 @@ class DriverSeeder extends Seeder
                 'email' => 'jean.dupont@example.com',
                 'phone_number' => '+33 6 12 34 56 78',
                 'status' => 'active',
+                'user_id' => 'user1',
             ],
             [
                 'id' => 'd2',
@@ -27,6 +28,7 @@ class DriverSeeder extends Seeder
                 'email' => 'marie.laurent@example.com',
                 'phone_number' => '+33 6 23 45 67 89',
                 'status' => 'active',
+                'user_id' => 'user1',
             ],
             [
                 'id' => 'd3',
@@ -36,6 +38,7 @@ class DriverSeeder extends Seeder
                 'email' => 'thomas.martin@example.com',
                 'phone_number' => '+33 6 34 56 78 90',
                 'status' => 'active',
+                'user_id' => 'user1',
             ],
         ];
 

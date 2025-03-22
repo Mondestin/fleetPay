@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('phone_number', 20)->nullable()->unique();
             $table->string('email')->nullable()->unique();
             $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

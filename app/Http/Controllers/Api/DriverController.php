@@ -9,9 +9,10 @@ use Illuminate\Validation\Rule;
 
 class DriverController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $drivers = Driver::query()
+            ->where('user_id', $request->user()->id)
             ->when(request('status'), fn($q, $status) => $q->where('status', $status))
             ->when(request('search'), function($q, $search) {
                 $q->where(function($q) use ($search) {

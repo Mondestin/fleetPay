@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\SubscriptionController;
 use App\Http\Controllers\Api\CompanyController;
+use App\Http\Controllers\Api\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 // Public routes
@@ -56,5 +57,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // Company routes
     Route::get('/companies/{user}', [CompanyController::class, 'show']);
     Route::put('/companies/{user}', [CompanyController::class, 'update']);
+
+    // Dashboard
+    Route::get('/dashboard/{user}', [DashboardController::class, 'index']);
 
 });

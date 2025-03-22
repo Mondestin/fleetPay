@@ -9,7 +9,8 @@ use App\Helpers\NameCheck;
 
 class UberImporter implements PlatformImporterInterface
 {
-    public function importDriver(array $driverData): Driver
+
+    public function importDriver(array $driverData, string $user): Driver
     {
         $fullName = $driverData['fullName'];
         $matchedDrivers = [];
@@ -41,11 +42,13 @@ class UberImporter implements PlatformImporterInterface
             'full_name' => $driverData['fullName'],
             'driver_uber_id' => $driverData['uberId'],
             'email' => $driverData['email'] ?? null,
-            'phone_number' => $driverData['phoneNumber'] ?? null
-        ]);
+            'phone_number' => $driverData['phoneNumber'] ?? null,
+            'user_id' => $user
+        ]); 
     }
 
-    public function importEarnings(Driver $driver, array $earningData): PlatformEarning
+
+    public function importEarnings(Driver $driver, array $earningData, string $user): PlatformEarning
     {
         $commission = Setting::where('name', 'commission')->first()->value;
 

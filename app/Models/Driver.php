@@ -22,6 +22,7 @@ class Driver extends Model
         'phone_number',
         'email',
         'status',
+        'user_id',
     ];
 
     /**
@@ -34,4 +35,13 @@ class Driver extends Model
         return $this->hasMany(PlatformEarning::class);
     }
 
+    /**
+     * Get the user for the driver.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 } 

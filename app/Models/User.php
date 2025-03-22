@@ -101,4 +101,14 @@ class User extends Authenticatable
     {
         return $this->hasOne(Company::class);
     }
+
+    /**
+     * Get the drivers for the user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function drivers()
+    {
+        return $this->hasMany(Driver::class);
+    }
 }
