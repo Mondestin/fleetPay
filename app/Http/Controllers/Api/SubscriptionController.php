@@ -10,8 +10,12 @@ use App\Models\User;
 
 class SubscriptionController extends Controller
 {
+    
     /**
      * Display a listing of the resource.
+     *
+     * @param Request $request The HTTP request object.
+     * @return \Illuminate\Http\JsonResponse The subscriptions.
      */
     public function index()
     {
@@ -38,6 +42,9 @@ class SubscriptionController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     *
+     * @param Request $request The HTTP request object.
+     * @return \Illuminate\Http\JsonResponse The created subscription.
      */
     public function store(Request $request)
     {
@@ -64,6 +71,9 @@ class SubscriptionController extends Controller
 
     /**
      * Update the specified resource in storage.
+     *
+     * @param Request $request The HTTP request object.
+     * @return \Illuminate\Http\JsonResponse The updated subscription.
      */
     public function update(Request $request)
     {
@@ -88,9 +98,13 @@ class SubscriptionController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+   /**
+    * Cancel the specified subscription.
+    *
+    * @param Request $request The HTTP request object.
+    * @param User $user The user to cancel the subscription for.
+    * @return \Illuminate\Http\JsonResponse The cancelled subscription.
+    */
     public function destroy(Request $request)
     {
         try {
@@ -120,9 +134,43 @@ class SubscriptionController extends Controller
             $subscription = Subscription::where('user_id', $user->id)->with('invoices')->first();
         } catch (\Exception $e) {
             logger($e->getMessage());
-            return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json(['error' => 'Subscription not found'], 404);
         }
      
         return response()->json($subscription);
     }
+
+    /**
+     * Perform an action (cancel, resume) on the specified subscription.
+     *
+     * @param Request $request The HTTP request object.
+     * @param User $user The user to perform the action on.
+     * @param string $action The action to perform.
+     * @return \Illuminate\Http\JsonResponse The action result.
+     */
+    public function action(Request $request)
+    {
+        $user = $request->user;
+        $action = $request->action;
+
+        try {   
+            $subscription = Subscription::where('user_id', $user)->first();
+        } catch (\Exception $e) {
+            logger($e->getMessage());
+            return response()->json(['error' => 'Subscription not found'], 404);
+        }
+
+        if ($action == 'cancel') {
+            $subscription->status = 'canceled';
+            $subscription->save();
+        }
+
+        if ($action == 'resume') {
+            $subscription->status = 'active';
+            $subscription->save();
+        }
+
+        return response()->json($subscription);
+    }
+
 }

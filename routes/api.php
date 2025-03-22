@@ -42,6 +42,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Subscriptions
     Route::apiResource('subscriptions', SubscriptionController::class);
     Route::get('subscriptions/{user}/current', [SubscriptionController::class, 'current']);
+    Route::put('subscriptions/{user}/{action}', [SubscriptionController::class, 'action']);
 
     // Settings
     Route::post('settings/commission', [SettingController::class, 'postCommission']);

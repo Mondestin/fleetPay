@@ -19,7 +19,7 @@ class CompanyController extends Controller
             return response()->json($company);
         } catch (\Exception $e) {
             logger($e->getMessage());
-            return response()->json(['error' => $e->getMessage()], 422);
+            return response()->json(['error' => 'Company not found'], 404);
         }
     }
    
@@ -28,25 +28,24 @@ class CompanyController extends Controller
      */
     public function update(Request $request)
     {
-       logger($request->all());
 
         // Validate request
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'address' => 'nullable|string',
             'phone' => 'nullable|string',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'logo' => 'nullable|string',
         ]);
-
+        
         try {
             $company = Company::where('user_id', $request->user)->first();
             $company->update($validated);
+    
             return response()->json($company);
         } catch (\Exception $e) {
             logger($e->getMessage());
-            return response()->json(['error' => $e->getMessage()], 422);
+            return response()->json(['error' => 'Company not found'], 404);
         }
     }
-
- 
+    
 } 
