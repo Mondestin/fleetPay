@@ -25,8 +25,10 @@ class AuthController extends Controller
             'device_name' => 'required',
         ]);
 
+        //get the user
         $user = User::where('email', $request->email)->first();
 
+        //check if the user exists and the password is correct
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
                 'message' => 'The provided credentials are incorrect.',
@@ -57,6 +59,7 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
+        //delete the current token
         $request->user()->currentAccessToken()->delete();
         return response()->json(['message' => 'Logged out successfully']);
     }
