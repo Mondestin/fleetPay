@@ -42,7 +42,7 @@ class InvoiceController extends Controller
             $validated = $request->validate([
                 'user_id' => 'required|exists:users,id',
                 'amount' => 'required|numeric|min:0',
-                'status' => ['required', Rule::in(['paid', 'pending', 'overdue'])],
+                'status' => ['required', Rule::in(['paid', 'pending', 'failed'])],
                 'issue_date' => 'required|date',
                 'due_date' => 'required|date|after_or_equal:issue_date',
         ]);

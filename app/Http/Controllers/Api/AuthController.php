@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use App\Models\Subscription;
 
 class AuthController extends Controller
 {
@@ -26,14 +27,25 @@ class AuthController extends Controller
         ]);
 
         //get the user
-        $user = User::where('email', $request->email)->first();
+        try {
+            $user = User::where('email', $request->email)->first();
+            } catch (\Exception $e) {
+                logger($e->getMessage());
+            }
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'email ou mot de passe incorrect.',
+                'errors' => ['email' => ['email ou mot de passe incorrect.']]
+            ], 401);
+        }
 
         //check if the user exists and the password is correct
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if (!Hash::check($request->password, $user->password)) {
             return response()->json([
-                'message' => 'The provided credentials are incorrect.',
+                'message' => 'email ou mot de passe incorrect.',
                 'errors' => [
-                    'email' => ['The provided credentials are incorrect.']
+                    'email' => ['email ou mot de passe incorrect.']
                 ]
             ], 401);
         }
@@ -43,6 +55,14 @@ class AuthController extends Controller
 
         // Create new token with expiration
         $token = $user->createToken($request->device_name, ['*'], now()->addHour());
+
+        try {
+            //get the user with the subscription
+            $subscription = Subscription::with('user')->where('user_id', $user->id)->first();
+        } catch (\Exception $e) {
+            logger($e->getMessage());
+        }
+        
 
         return response()->json([
             'token' => $token->plainTextToken,

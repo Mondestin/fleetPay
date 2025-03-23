@@ -48,7 +48,7 @@ class SubscriptionController extends Controller
      */
     public function store(Request $request)
     {
-        
+   
         //validate the request
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
@@ -59,20 +59,29 @@ class SubscriptionController extends Controller
             'payment_status' => ['required', Rule::in(['paid', 'pending', 'failed'])],
         ]);
 
+        //check if the user has an active subscription
+        $user = User::find($validated['user_id']);
+        if ($user->subscription && $user->subscription->status == 'active') {
+            return response()->json(['error' => 'L\'utilisateur a déjà un abonnement actif'], 400);
+        }
+        
+
         try {
             //create a subscription
             $subscription = Subscription::create($validated);
 
             //create an invoice for the subscription
             $invoice = Invoice::create([
+                'invoice_number' => 'INV-' . now()->format('Ymd') . '-' . strtoupper(Invoice::count() + 1),
                 'subscription_id' => $subscription->id,
                 'amount' => $validated['amount'],
-                'status' => $validated['status'],
-                'payment_status' => $validated['payment_status'],
+                'status' => $validated['payment_status'],
+                'issue_date' => now(),
+                'due_date' => now()->addDays(14),
             ]);
         } catch (\Exception $e) {
             logger($e->getMessage());
-            return response()->json(['error' => 'Subscription not created'], 500);
+            return response()->json(['error' => 'Erreur lors de la création de l\'abonnement'], 500);
         }
         return response()->json($subscription->load('user'), 201);
     }
@@ -195,7 +204,10 @@ class SubscriptionController extends Controller
     {
         try {
             //get the subscription with the invoices
-            $subscription = Subscription::with('invoices')->findOrFail($request->subscription);
+            $subscription = Subscription::with('invoices')
+                ->with('user')
+                ->findOrFail($request->subscription);
+
         } catch (\Exception $e) {
             logger($e->getMessage());
             return response()->json(['error' => 'Invoices not found'], 404);

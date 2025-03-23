@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('invoice_number', 20)->unique();
             $table->foreignUuid('subscription_id')->constrained('subscriptions')->onDelete('cascade');
             $table->decimal('amount', 10, 2);
-            $table->enum('status', ['paid', 'pending', 'overdue'])->default('pending');
+            $table->enum('status', ['paid', 'pending', 'failed'])->default('pending');
             $table->date('issue_date');
             $table->date('due_date');
             $table->timestamps();
