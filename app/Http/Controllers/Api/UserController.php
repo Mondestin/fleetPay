@@ -9,6 +9,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\UserCreated;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class UserController extends Controller
 {
@@ -32,6 +33,15 @@ class UserController extends Controller
                 });
             })
             ->orderBy(request('sort_by', 'created_at'), request('sort_direction', 'desc'))
+            //get last_used_at form personnal_access_tokens 
+            ->addSelect([
+                'last_used_at' => PersonalAccessToken::select('last_used_at')
+                    ->whereColumn('tokenable_id', 'users.id')
+                    ->where('tokenable_type', User::class)
+                    ->orderBy('last_used_at', 'desc')
+                    ->limit(1)
+            ])
+
             ->paginate(request('per_page', 100));
         
         return response()->json($users);

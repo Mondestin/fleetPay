@@ -187,18 +187,19 @@ class SubscriptionController extends Controller
     /**
      * Get the invoices for a subscription.
      *
+     * @param Request $request The HTTP request object.
      * @param Subscription $subscription The subscription to get the invoices for.
      * @return \Illuminate\Http\JsonResponse The invoices for the subscription.
      */
-    public function invoices(Subscription $subscription)
+    public function invoices(Request $request)
     {
         try {
-            //get the invoices for the subscription
-            $invoices = Invoice::where('subscription_id', $subscription->id)->orderBy('created_at', 'desc')->get();
+            //get the subscription with the invoices
+            $subscription = Subscription::with('invoices')->findOrFail($request->subscription);
         } catch (\Exception $e) {
             logger($e->getMessage());
             return response()->json(['error' => 'Invoices not found'], 404);
         }
-        return response()->json($invoices);
+        return response()->json($subscription);
     }
 }
