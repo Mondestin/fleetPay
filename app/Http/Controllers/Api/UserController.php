@@ -32,7 +32,7 @@ class UserController extends Controller
                 });
             })
             ->orderBy(request('sort_by', 'created_at'), request('sort_direction', 'desc'))
-            ->paginate(request('per_page', 15));
+            ->paginate(request('per_page', 100));
         
         return response()->json($users);
     }

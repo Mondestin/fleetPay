@@ -7,7 +7,7 @@ use App\Models\Subscription;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\User;
-
+use App\Models\Invoice;
 class SubscriptionController extends Controller
 {
     
@@ -48,7 +48,8 @@ class SubscriptionController extends Controller
      */
     public function store(Request $request)
     {
-        logger($request->all());
+        
+        //validate the request
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
             'start_date' => 'required|date',
@@ -57,13 +58,21 @@ class SubscriptionController extends Controller
             'status' => ['required', Rule::in(['active', 'canceled', 'expired'])],
             'payment_status' => ['required', Rule::in(['paid', 'pending', 'failed'])],
         ]);
-        logger($validated);
+
         try {
-            
+            //create a subscription
             $subscription = Subscription::create($validated);
+
+            //create an invoice for the subscription
+            $invoice = Invoice::create([
+                'subscription_id' => $subscription->id,
+                'amount' => $validated['amount'],
+                'status' => $validated['status'],
+                'payment_status' => $validated['payment_status'],
+            ]);
         } catch (\Exception $e) {
             logger($e->getMessage());
-            return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json(['error' => 'Subscription not created'], 500);
         }
         return response()->json($subscription->load('user'), 201);
     }
@@ -114,7 +123,7 @@ class SubscriptionController extends Controller
                 return response()->json(['message' => 'Subscription deleted successfully']);
             } catch (\Exception $e) {
                 logger($e->getMessage());
-                return response()->json(['error' => $e->getMessage()], 404);
+                return response()->json(['error' => 'Subscription not deleted'], 500);
             }
         } catch (\Exception $e) {
             return response()->json(['error' => 'Subscription not found'], 404);
@@ -154,17 +163,19 @@ class SubscriptionController extends Controller
         $action = $request->action;
 
         try {   
+            //get the subscription
             $subscription = Subscription::where('user_id', $user)->first();
         } catch (\Exception $e) {
             logger($e->getMessage());
             return response()->json(['error' => 'Subscription not found'], 404);
         }
 
+        //cancel the subscription
         if ($action == 'cancel') {
             $subscription->status = 'canceled';
             $subscription->save();
         }
-
+        //resume the subscription
         if ($action == 'resume') {
             $subscription->status = 'active';
             $subscription->save();
@@ -172,5 +183,22 @@ class SubscriptionController extends Controller
 
         return response()->json($subscription);
     }
-
+ 
+    /**
+     * Get the invoices for a subscription.
+     *
+     * @param Subscription $subscription The subscription to get the invoices for.
+     * @return \Illuminate\Http\JsonResponse The invoices for the subscription.
+     */
+    public function invoices(Subscription $subscription)
+    {
+        try {
+            //get the invoices for the subscription
+            $invoices = Invoice::where('subscription_id', $subscription->id)->orderBy('created_at', 'desc')->get();
+        } catch (\Exception $e) {
+            logger($e->getMessage());
+            return response()->json(['error' => 'Invoices not found'], 404);
+        }
+        return response()->json($invoices);
+    }
 }

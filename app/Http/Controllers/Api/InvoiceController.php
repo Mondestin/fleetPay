@@ -11,12 +11,28 @@ use App\Models\User;
 use App\Models\Subscription;
 class InvoiceController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        //get all invoices with the subscription and user
-        $invoices = Subscription::with('invoices')->with('user')->get();
+        $query = Invoice::with('subscription.user');
 
-        logger($invoices);  
+        // Search functionality
+        if ($request->has('search')) {
+            $searchTerm = $request->search;
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('invoice_number', 'LIKE', "%{$searchTerm}%")
+                    ->orWhere('amount', 'LIKE', "%{$searchTerm}%")
+                    ->orWhereHas('subscription.user', function ($userQuery) use ($searchTerm) {
+                        $userQuery->where('first_name', 'LIKE', "%{$searchTerm}%")
+                            ->orWhere('last_name', 'LIKE', "%{$searchTerm}%")
+                            ->orWhere('email', 'LIKE', "%{$searchTerm}%");
+                    });
+            });
+        }
+
+        // Pagination
+        $perPage = $request->input('per_page', 1000);
+        $invoices = $query->orderBy('created_at', 'desc')->paginate($perPage);
+
         return response()->json($invoices);
     }
 

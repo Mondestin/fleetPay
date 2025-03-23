@@ -15,7 +15,8 @@ class Invoice extends Model
         'amount',
         'status',
         'issue_date',
-        'due_date'
+        'due_date',
+        // ... other fillable fields
     ];
 
     protected $casts = [
