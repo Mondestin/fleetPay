@@ -40,13 +40,27 @@ class SettingController extends Controller
                 $setting = Setting::where('name', 'commission')
                  ->where('user_id', $request->user()->id)
                  ->first();
+
+                //check if the setting exists
+                if (!$setting) {
+                    //create the commission setting
+                    $setting = Setting::create([
+                        'name' => 'commission',
+                        'value' => $validated['commission'],
+                        'user_id' => $request->user()->id
+                    ]);
+                    return response()->json(['message' => 'Commission créée avec succès'], 201);
+                }
+
+                //update the commission setting
                 $setting->value = $validated['commission'];
                 $setting->save();
+
         } catch (\Exception $e) {
             logger($e->getMessage());
-            return response()->json(['error' => 'Commission n\'a pas été mise à jour'], 404);
+            return response()->json(['error' => 'Erreur lors de la mise à jour de la commission'], 500);
         }
 
-        return response()->json($setting);
+        return response()->json(['message' => 'Commission mise à jour avec succès']);
     }
 } 
