@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\UserCreated;
 use Laravel\Sanctum\PersonalAccessToken;
+use App\Models\Company;
 
 class UserController extends Controller
 {
@@ -67,27 +68,34 @@ class UserController extends Controller
         ]);
         } catch (\Exception $e) {
             logger($e->getMessage());
-            return response()->json(['message' => $e->getMessage()], 404);
+            return response()->json(['error' => $e->getMessage()], 404);
         }
-
-        logger($validated);
 
         $validated['password'] = Hash::make("password");
         try {
             $user = User::create($validated);
 
             //send email to user
-          try {
-            Mail::to($user->email)->send(new UserCreated($user));
-          } catch (\Exception $e) {
+            try {
+                Mail::to($user->email)->send(new UserCreated($user));
+            } catch (\Exception $e) {
             logger("Error sending email to user: " . $e->getMessage());
-          }
-
+            }
+            //create a company for the user
+            try {
+                Company::create([
+                    'name' => $validated['first_name'] . ' ' . $validated['last_name'],
+                    'status' => 'active',
+                    'user_id' => $user->id
+                ]);
+            } catch (\Exception $e) {
+                logger("Error creating company for user: " . $e->getMessage());
+            }
 
 
         } catch (\Exception $e) {
             logger($e->getMessage());
-            return response()->json(['message' => $e->getMessage()], 404);
+            return response()->json(['error' => $e->getMessage()], 404);
         }
         return response()->json($user, 201);
     }
