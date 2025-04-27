@@ -49,7 +49,7 @@ class PlatformEarningController extends Controller
 
                 // Calculate totals
                 $total = array_sum(array_map('floatval', $totalEarnings));
-                $commission = Setting::where('name', 'commission')->where('created_by', $request->user()->id)->value('value');
+                $commission = Setting::where('name', 'commission')->where('created_by', $request->user()->id)->value;
                 $totalDue = $total - $commission;
 
                 return [
