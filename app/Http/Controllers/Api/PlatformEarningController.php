@@ -11,9 +11,11 @@ class PlatformEarningController extends Controller
 {
     public function index(Request $request)
     {
+        $user = $request->user();
+     
         $earnings = PlatformEarning::query()
             ->with(['driver', 'createdBy'])
-            ->where('created_by', $request->user()->id)
+            ->where('created_by', $user->id)
             ->when(request('driver_id'), fn($q, $driverId) => $q->where('driver_id', $driverId))
             ->when(request('platform'), fn($q, $platform) => $q->where('platform', $platform))
             ->when(request('validated'), fn($q, $validated) => $q->where('validated', $validated))
@@ -32,7 +34,7 @@ class PlatformEarningController extends Controller
             ->orderBy(request('sort_by', 'week_start_date'), request('sort_direction', 'desc'))
             ->get()
             ->groupBy(['driver_id', 'week_start_date'])
-            ->map(function ($driverWeekEarnings) {
+            ->map(function ($driverWeekEarnings) use ($user) {
                 $firstEarning = $driverWeekEarnings->first()->first();
                 $totalEarnings = [
                     'bolt_earnings' => '0',
@@ -49,7 +51,8 @@ class PlatformEarningController extends Controller
 
                 // Calculate totals
                 $total = array_sum(array_map('floatval', $totalEarnings));
-                $commission = Setting::where('name', 'commission')->first()->value;
+                $commission = Setting::where('name', 'commission')->where('user_id', $user->id)->first()->value;
+                logger("commission user: $commission");
                 $totalDue = $total - $commission;
 
                 return [
@@ -70,13 +73,13 @@ class PlatformEarningController extends Controller
                 ];
             })
             ->values();
-
+        logger("earnings: ");
         // Paginate the results manually
         $page = request('page', 1);
         $perPage = request('per_page', 100);
         $items = $earnings->forPage($page, $perPage);
         
-        logger($earnings);
+   
         return response()->json([
             'data' => $items,
             'current_page' => (int) $page,
