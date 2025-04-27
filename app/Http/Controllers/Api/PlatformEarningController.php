@@ -32,7 +32,7 @@ class PlatformEarningController extends Controller
             ->orderBy(request('sort_by', 'week_start_date'), request('sort_direction', 'desc'))
             ->get()
             ->groupBy(['driver_id', 'week_start_date'])
-            ->map(function ($driverWeekEarnings) {
+            ->map(function ($driverWeekEarnings) use ($request) {
                 $firstEarning = $driverWeekEarnings->first()->first();
                 $totalEarnings = [
                     'bolt_earnings' => '0',
@@ -49,7 +49,7 @@ class PlatformEarningController extends Controller
 
                 // Calculate totals
                 $total = array_sum(array_map('floatval', $totalEarnings));
-                $commission = Setting::where('name', 'commission')->first()->value;
+                $commission = Setting::where('name', 'commission')->where('created_by', $request->user()->id)->value('value');
                 $totalDue = $total - $commission;
 
                 return [
