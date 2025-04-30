@@ -39,6 +39,16 @@ class CompanyController extends Controller
         
         try {
             $company = Company::where('user_id', $request->user)->first();
+            
+            if (!$company) {
+                $company = Company::create([
+                    'user_id' => $request->user,
+                    'name' => $validated['name'],
+                    'address' => $validated['address'],
+                    'phone' => $validated['phone'],
+                    'logo' => $validated['logo'],
+                ]);
+            }
             $company->update($validated);
     
             return response()->json($company);
