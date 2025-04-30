@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\UserCreated;
 use Laravel\Sanctum\PersonalAccessToken;
 use App\Models\Company;
-
+use App\Models\Subscription;
 class UserController extends Controller
 {
     /**
@@ -92,6 +92,20 @@ class UserController extends Controller
                 logger("Error creating company for user: " . $e->getMessage());
             }
 
+            //create subscription for the user
+            try {
+                Subscription::create([
+                    'user_id' => $user->id,
+                    'status' => 'active',
+                    'start_date' => now(),
+                    'end_date' => now()->addDays(30),
+                    'amount' => 199.99,
+                    'payment_status' => 'pending',
+                    
+                ]);
+            } catch (\Exception $e) {
+                logger("Error creating subscription for user: " . $e->getMessage());
+            }
 
         } catch (\Exception $e) {
             logger($e->getMessage());

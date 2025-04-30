@@ -38,8 +38,9 @@ class CompanyController extends Controller
         ]);
         
         try {
+            //get the company
             $company = Company::where('user_id', $request->user)->first();
-            
+            //check if the company exists
             if (!$company) {
                 $company = Company::create([
                     'user_id' => $request->user,
@@ -49,8 +50,8 @@ class CompanyController extends Controller
                     'logo' => $validated['logo'],
                 ]);
             }
+            //update the company
             $company->update($validated);
-    
             return response()->json($company);
         } catch (\Exception $e) {
             logger($e->getMessage());

@@ -33,52 +33,7 @@ class DashboardController extends Controller
         $activeDrivers = Driver::where('user_id', $user->id)
             ->where('status', 'active')
             ->count();
-     /*
-        // Get weekly revenue
-        $weeklyRevenue = PlatformEarning::where('user_id', $user->id)
-            ->whereBetween('created_at', [$currentWeekStart, $currentWeekEnd])
-            ->sum('amount');
 
-        // Calculate percentage change from previous week
-        $previousWeekRevenue = PlatformEarning::where('user_id', $user->id)
-            ->whereBetween('created_at', [$previousWeekStart, $previousWeekEnd])
-            ->sum('amount');
-        
-        $percentageChange = $previousWeekRevenue != 0 
-            ? (($weeklyRevenue - $previousWeekRevenue) / $previousWeekRevenue) * 100 
-            : 0;
-
-
-        // Get weekly comparison data by platform
-        $currentWeekByPlatform = PlatformEarning::where('user_id', $user->id)
-            ->whereBetween('created_at', [$currentWeekStart, $currentWeekEnd])
-            ->groupBy('platform')
-            ->select('platform', DB::raw('SUM(amount) as total'))
-            ->get()
-            ->pluck('total', 'platform')
-            ->toArray();
-
-        $previousWeekByPlatform = PlatformEarning::where('user_id', $user->id)
-            ->whereBetween('created_at', [$previousWeekStart, $previousWeekEnd])
-            ->groupBy('platform')
-            ->select('platform', DB::raw('SUM(amount) as total'))
-            ->get()
-            ->pluck('total', 'platform')
-            ->toArray();
-
-        // Get monthly revenue data (last 6 months)
-        $monthlyRevenue = PlatformEarning::where('user_id', $user->id)
-            ->where('created_at', '>=', Carbon::now()->subMonths(6))
-            ->groupBy('platform')
-            ->groupBy(DB::raw('MONTH(created_at)'))
-            ->select(
-                'platform',
-                DB::raw('MONTH(created_at) as month'),
-                DB::raw('SUM(amount) as total')
-            )
-            ->get()
-            ->groupBy('platform');
-*/
         return response()->json([
             'status' => 'success',
             'data' => [
