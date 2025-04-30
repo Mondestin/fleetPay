@@ -22,7 +22,7 @@ class SettingController extends Controller
             return response()->json(['commission' => $setting->value]);
         } catch (\Exception $e) {
             logger($e->getMessage());
-            return response()->json(['error' => 'Commission n\'a pas été trouvée'], 404);
+            return response()->json(['commission' => 50]);
         }
     }
 
