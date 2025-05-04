@@ -109,20 +109,19 @@ class UserController extends Controller
 
                 //create invoice for the user
                 Invoice::create([
-                    'user_id' => $user->id,
+                    'invoice_number' => 'INV-' . $user->id . '-' . now()->format('YmdHis'),
                     'status' => 'pending',
                     'amount' => 199.99,
-                    'payment_status' => 'pending',
                     'subscription_id' => $subscription->id,
+                    'issue_date' => now(),
+                    'due_date' => now()->addDays(7)
                 ]);
 
             } catch (\Exception $e) {
                 logger("Error creating subscription for user: " . $e->getMessage());
             }
 
-          
-          
-
+        
             //create commission for the user
             try {
                 Setting::create([

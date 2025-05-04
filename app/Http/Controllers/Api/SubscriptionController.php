@@ -77,7 +77,7 @@ class SubscriptionController extends Controller
                 'amount' => $validated['amount'],
                 'status' => $validated['payment_status'],
                 'issue_date' => now(),
-                'due_date' => now()->addDays(14),
+                'due_date' => now()->addDays(7),
             ]);
         } catch (\Exception $e) {
             logger($e->getMessage());
