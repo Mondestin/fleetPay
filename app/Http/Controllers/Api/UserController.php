@@ -14,7 +14,8 @@ use App\Models\Subscription;
 use App\Models\Setting;
 use App\Models\Invoice;
 use Illuminate\Support\Str;
-use App\Mail\TestMail;
+use App\Mail\UserCreated;
+
 class UserController extends Controller
 {
     /**
@@ -74,14 +75,17 @@ class UserController extends Controller
             return response()->json(['error' => $e->getMessage()], 404);
         }
 
-        $validated['password'] = Hash::make("password");
+
+        //generate a random password with special characters and numbers    
+        $password = Str::random(10);
+        $validated['password'] = Hash::make($password);
         try {
             $user = User::create($validated);
 
             //send email to user
             try {
-                
-                Mail::to($user->email)->send(new TestMail($user));
+
+                Mail::to($user->email)->send(new UserCreated($user, $password));
 
             } catch (\Exception $e) {
             logger("Error sending email to user: " . $e->getMessage());
