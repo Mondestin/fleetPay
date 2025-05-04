@@ -14,6 +14,7 @@ use App\Models\Company;
 use App\Models\Subscription;
 use App\Models\Setting;
 use App\Models\Invoice;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -87,6 +88,7 @@ class UserController extends Controller
             //create a company for the user
             try {
                 Company::create([
+                    'id' => Str::uuid(),
                     'name' => $validated['first_name'] . ' ' . $validated['last_name'],
                     'status' => 'active',
                     'user_id' => $user->id
@@ -101,7 +103,7 @@ class UserController extends Controller
                     'user_id' => $user->id,
                     'status' => 'active',
                     'start_date' => now(),
-                    'end_date' => now()->addDays(30),
+                    'end_date' => now()->addDays(14),
                     'amount' => 199.99,
                     'payment_status' => 'pending',
                     
@@ -109,7 +111,7 @@ class UserController extends Controller
 
                 //create invoice for the user
                 Invoice::create([
-                    'invoice_number' => 'INV-' . $user->id . '-' . now()->format('YmdHis'),
+                    'invoice_number' => 'INV-' . now()->format('Ymd') . '-' . strtoupper(Invoice::count() + 1),
                     'status' => 'pending',
                     'amount' => 199.99,
                     'subscription_id' => $subscription->id,
@@ -121,7 +123,6 @@ class UserController extends Controller
                 logger("Error creating subscription for user: " . $e->getMessage());
             }
 
-        
             //create commission for the user
             try {
                 Setting::create([
