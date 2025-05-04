@@ -32,4 +32,18 @@ class NameCheck
 
         return $matchCount >= 2;
     }
+
+    /**
+     * Clean a name by removing non-alphanumeric characters and extra spaces.
+     *
+     * @param string $name The name to clean.
+     * @return string The cleaned name.
+     */
+    public static function cleanName(string $name): string
+    {
+        $name = preg_replace('/[^a-zA-Z0-9]/', ' ', $name);
+        $name = preg_replace('/\s+/', ' ', $name);
+        $name = trim($name);
+        return $name;
+    }
 }

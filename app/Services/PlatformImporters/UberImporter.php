@@ -12,7 +12,7 @@ class UberImporter implements PlatformImporterInterface
 
     public function importDriver(array $driverData, string $user): Driver
     {
-        $fullName = $driverData['fullName'];
+        $fullName = NameCheck::cleanName($driverData['fullName']);
         $matchedDrivers = [];
         //get driver for a current user
         $drivers = Driver::where('user_id', $user)->get();
@@ -28,8 +28,6 @@ class UberImporter implements PlatformImporterInterface
         if (count($matchedDrivers) === 1) {
             return $matchedDrivers[0];
         }
-
-    
 
         // Create new driver if no match found
         return Driver::create([

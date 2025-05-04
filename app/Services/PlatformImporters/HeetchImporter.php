@@ -11,8 +11,8 @@ class HeetchImporter implements PlatformImporterInterface
 {
     public function importDriver(array $driverData, string $user): Driver
     {
-        $fullName = $driverData['fullName'];
-        $found = false;
+        $fullName = NameCheck::cleanName($driverData['fullName']);
+
         //get driver for a current user
         $drivers = Driver::where('user_id', $user)->get();
 
