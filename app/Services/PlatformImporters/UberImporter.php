@@ -14,9 +14,11 @@ class UberImporter implements PlatformImporterInterface
     {
         $fullName = $driverData['fullName'];
         $matchedDrivers = [];
-        
+        //get driver for a current user
+        $drivers = Driver::where('user_id', $user)->get();
+
         // First check by name
-        foreach (Driver::all() as $existingDriver) {
+        foreach ($drivers as $existingDriver) {
             if (NameCheck::matchName($fullName, $existingDriver->full_name)) {
                 $matchedDrivers[] = $existingDriver;
             }
@@ -27,20 +29,14 @@ class UberImporter implements PlatformImporterInterface
             return $matchedDrivers[0];
         }
 
-        // If multiple matches or no matches, try to find by uber_id
-        if ($driverData['uberId']) {
-            $driverByUberId = Driver::where('driver_uber_id', $driverData['uberId'])->first();
-            if ($driverByUberId) {
-                return $driverByUberId;
-            }
-        }
+    
 
         // Create new driver if no match found
         return Driver::create([
             'first_name' => $driverData['firstName'],
             'last_name' => $driverData['lastName'],
             'full_name' => $driverData['fullName'],
-            'driver_uber_id' => $driverData['uberId'],
+            'driver_uber_id' => null,
             'email' => $driverData['email'] ?? null,
             'phone_number' => $driverData['phoneNumber'] ?? null,
             'user_id' => $user
@@ -50,7 +46,7 @@ class UberImporter implements PlatformImporterInterface
 
     public function importEarnings(Driver $driver, array $earningData, string $user): PlatformEarning
     {
-        $commission = Setting::where('name', 'commission')->first()->value;
+        $commission = Setting::where('name', 'commission')->where('user_id', $user)->first()->value;
 
         return PlatformEarning::firstOrCreate(
             [

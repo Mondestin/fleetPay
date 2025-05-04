@@ -13,9 +13,11 @@ class HeetchImporter implements PlatformImporterInterface
     {
         $fullName = $driverData['fullName'];
         $found = false;
-        
+        //get driver for a current user
+        $drivers = Driver::where('user_id', $user)->get();
+
         // Check existing drivers for name match
-        foreach (Driver::all() as $existingDriver) {
+        foreach ($drivers as $existingDriver) {
             if (NameCheck::matchName($fullName, $existingDriver->full_name)) {
                 return $existingDriver;
             }
@@ -35,7 +37,7 @@ class HeetchImporter implements PlatformImporterInterface
 
     public function importEarnings(Driver $driver, array $earningData, string $user): PlatformEarning
     {
-        $commission = Setting::where('name', 'commission')->first()->value;
+        $commission = Setting::where('name', 'commission')->where('user_id', $user)->first()->value;
 
         return PlatformEarning::firstOrCreate(
             [

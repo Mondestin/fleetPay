@@ -19,9 +19,11 @@ class BoltImporter implements PlatformImporterInterface
     {
         $fullName = $driverData['fullName'];
         $matchedDrivers = [];
-        
+        //get driver for a current user
+        $drivers = Driver::where('user_id', $user)->get();
+
         // First check by name
-        foreach (Driver::all() as $existingDriver) {
+        foreach ($drivers as $existingDriver) {
             if (NameCheck::matchName($fullName, $existingDriver->full_name)) {
                 $matchedDrivers[] = $existingDriver;
             }
@@ -60,7 +62,7 @@ class BoltImporter implements PlatformImporterInterface
      */
     public function importEarnings(Driver $driver, array $earningData, string $user): PlatformEarning
     {
-        $commission = Setting::where('name', 'commission')->first()->value;
+        $commission = Setting::where('name', 'commission')->where('user_id', $user)->first()->value;
 
         return PlatformEarning::firstOrCreate(
             [

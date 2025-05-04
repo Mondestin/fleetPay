@@ -12,6 +12,8 @@ use App\Mail\UserCreated;
 use Laravel\Sanctum\PersonalAccessToken;
 use App\Models\Company;
 use App\Models\Subscription;
+use App\Models\Setting;
+
 class UserController extends Controller
 {
     /**
@@ -107,9 +109,20 @@ class UserController extends Controller
                 logger("Error creating subscription for user: " . $e->getMessage());
             }
 
+            //create commission for the user
+            try {
+                Setting::create([
+                    'user_id' => $user->id,
+                    'name' => 'commission',
+                    'value' => 0.00,
+                ]);
+            } catch (\Exception $e) {
+                logger("Error creating commission for user: " . $e->getMessage());
+            }
+
         } catch (\Exception $e) {
             logger($e->getMessage());
-            return response()->json(['error' => $e->getMessage()], 404);
+            return response()->json(['error' => 'Erreur lors de la création de l\'utilisateur'], 404);
         }
         return response()->json($user, 201);
     }
