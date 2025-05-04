@@ -13,6 +13,7 @@ use Laravel\Sanctum\PersonalAccessToken;
 use App\Models\Company;
 use App\Models\Subscription;
 use App\Models\Setting;
+use App\Models\Invoice;
 
 class UserController extends Controller
 {
@@ -94,9 +95,9 @@ class UserController extends Controller
                 logger("Error creating company for user: " . $e->getMessage());
             }
 
-            //create subscription for the user
+            //create subscription and invoice for the user
             try {
-                Subscription::create([
+                $subscription = Subscription::create([
                     'user_id' => $user->id,
                     'status' => 'active',
                     'start_date' => now(),
@@ -105,9 +106,22 @@ class UserController extends Controller
                     'payment_status' => 'pending',
                     
                 ]);
+
+                //create invoice for the user
+                Invoice::create([
+                    'user_id' => $user->id,
+                    'status' => 'pending',
+                    'amount' => 199.99,
+                    'payment_status' => 'pending',
+                    'subscription_id' => $subscription->id,
+                ]);
+
             } catch (\Exception $e) {
                 logger("Error creating subscription for user: " . $e->getMessage());
             }
+
+          
+          
 
             //create commission for the user
             try {
