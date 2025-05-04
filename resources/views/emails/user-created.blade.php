@@ -1,6 +1,6 @@
 @component('mail::message')
 <div style="text-align: center; margin-bottom: 20px;">
-    <img src="https://fleet-pay-front.vercel.app/images/fleetpay-bgt.png" alt="FleetPay Logo" style="max-width: 150px;">
+    <img src="https://fleet-pay-front.vercel.app/images/fleetpay-bgt.png" alt="FleetPay Logo" style="max-width: 180px;">
 </div>
 
 # Bienvenue {{ $user->first_name }} {{ $user->last_name }}!
@@ -31,6 +31,6 @@ Accéder au Tableau de Bord
 
 <div style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
     <p style="color: #000000; margin: 0;">Cordialement,</p>
-    <p style="color: #01631b; margin: 5px 0; font-weight: bold;">L'équipe {{ config('app.name') }}</p>
+    <p style="color: #000000; margin: 5px 0; font-weight: bold;">L'équipe {{ config('app.name') }}</p>
 </div>
 @endcomponent
