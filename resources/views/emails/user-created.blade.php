@@ -1,7 +1,7 @@
 @component('mail::message')
 # Welcome to FleetPay
 
-Hi {{ $user->first_name }},
+Hi Test,
 
 Your account has been created successfully.
 Your temporary password is: "password"

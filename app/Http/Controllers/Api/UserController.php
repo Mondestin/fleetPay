@@ -8,14 +8,13 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\UserCreated;
 use Laravel\Sanctum\PersonalAccessToken;
 use App\Models\Company;
 use App\Models\Subscription;
 use App\Models\Setting;
 use App\Models\Invoice;
 use Illuminate\Support\Str;
-
+use App\Mail\TestMail;
 class UserController extends Controller
 {
     /**
@@ -81,7 +80,9 @@ class UserController extends Controller
 
             //send email to user
             try {
-                Mail::to($user->email)->send(new UserCreated($user));
+                
+                Mail::to($user->email)->send(new TestMail($user));
+
             } catch (\Exception $e) {
             logger("Error sending email to user: " . $e->getMessage());
             }
