@@ -41,9 +41,18 @@ class NameCheck
      */
     public static function cleanName(string $name): string
     {
+        // Remove accents
+        $name = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $name);
+
+        // Replace non-alphanumeric characters with space
         $name = preg_replace('/[^a-zA-Z0-9]/', ' ', $name);
+
+        // Replace multiple spaces with a single space
         $name = preg_replace('/\s+/', ' ', $name);
+
+        // Trim leading/trailing spaces
         $name = trim($name);
+
         return $name;
     }
 }
