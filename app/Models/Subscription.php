@@ -16,6 +16,9 @@ class Subscription extends Model
         'amount',
         'status',
         'payment_status',
+        'plan_name',
+        'expires_at',
+        'payment_method'
     ];
 
     protected $casts = [

@@ -85,8 +85,9 @@ class UserController extends Controller
             //send email to user
             try {
 
-                Mail::to($user->email)->send(new UserCreated($user, $password));
-
+               Mail::to($user->email)->send(new UserCreated($user, $password));
+                logger("mail sent to user: " . $user->email);
+    
             } catch (\Exception $e) {
             logger("Error sending email to user: " . $e->getMessage());
             }
