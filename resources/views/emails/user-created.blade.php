@@ -21,16 +21,16 @@ Vous pouvez maintenant accéder à votre tableau de bord pour :
 - Gérer votre abonnement
 - et bien plus encore...
 
-@component('mail::button', ['url' => 'https://fleet-pay-front.vercel.app/', 'color' => 'primary'])
+@component('mail::button', ['url' => 'https://fleet-pay.fr/sign-in', 'color' => 'primary'])
 Accéder au Tableau de Bord
 @endcomponent
 
 <div style="margin-top: 20px; color: #666;">
-    <p>Si vous avez des questions, n'hésitez pas à nous contacter au <br> <a href="mailto:support@phoenone.com">support@phoenone.com</a></p>
+    <p>Si vous avez des questions, n'hésitez pas à nous contacter au <br> <a href="mailto:support@fleet-pay.fr">support@fleet-pay.fr</a></p>
 </div>
 
 <div style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
     <p style="color: #000000; margin: 0;">Cordialement,</p>
-    <p style="color: #000000; margin: 5px 0; font-weight: bold;">L'équipe {{ config('app.name') }}</p>
+    <p style="color: #000000; margin: 5px 0; font-weight: bold;">L'équipe Fleet Pay</p>
 </div>
 @endcomponent
