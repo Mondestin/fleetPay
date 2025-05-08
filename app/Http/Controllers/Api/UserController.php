@@ -110,7 +110,7 @@ class UserController extends Controller
                     'status' => 'active',
                     'start_date' => now(),
                     'end_date' => now()->addDays(14),
-                    'amount' => 199.99,
+                    'amount' => 0.00,
                     'payment_status' => 'pending',
                     
                 ]);
@@ -119,7 +119,7 @@ class UserController extends Controller
                 Invoice::create([
                     'invoice_number' => 'INV-' . now()->format('Ymd') . '-' . strtoupper(Invoice::count() + 1),
                     'status' => 'pending',
-                    'amount' => 199.99,
+                    'amount' => 0.00,
                     'subscription_id' => $subscription->id,
                     'issue_date' => now(),
                     'due_date' => now()->addDays(7)

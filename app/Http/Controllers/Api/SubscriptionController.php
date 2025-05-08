@@ -182,6 +182,7 @@ class SubscriptionController extends Controller
         //cancel the subscription
         if ($action == 'cancel') {
             $subscription->status = 'canceled';
+            $subscription->expires_at = $subscription->end_date;
             $subscription->save();
         }
         //resume the subscription
