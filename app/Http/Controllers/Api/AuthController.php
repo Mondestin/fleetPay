@@ -16,7 +16,7 @@ use App\Mail\UserCreated;
 use App\Models\Company;
 use App\Models\Invoice;
 use App\Models\Setting;
-
+use App\Mail\NotificationMail;
 class AuthController extends Controller
 {
     /**
@@ -132,12 +132,17 @@ class AuthController extends Controller
                     'password' => Hash::make($validated['password']),
                 ]);
 
-            //send email to user
+            //send emails
             try {
 
                Mail::to($user->email)->send(new UserCreated($user, $password));
                 logger("mail sent to user: " . $user->email);
-    
+
+                //send email to admin
+                $adminEmail = env('MAIL_TO_ADMIN');
+                Mail::to($adminEmail)->send(new NotificationMail($user));
+                logger("mail sent to admin: " . $adminEmail);
+
             } catch (\Exception $e) {
             logger("Error sending email to user: " . $e->getMessage());
             }

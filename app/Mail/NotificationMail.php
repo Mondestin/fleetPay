@@ -13,12 +13,14 @@ class NotificationMail extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $user;
+
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct($user)
     {
-        //
+        $this->user = $user;
     }
 
     /**
@@ -38,6 +40,9 @@ class NotificationMail extends Mailable
     {
         return new Content(
             markdown: 'emails.user-register',
+            with: [
+                'user' => $this->user,
+            ],
         );
     }
 
