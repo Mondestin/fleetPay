@@ -9,15 +9,15 @@ Vous avez reçu un nouveau message via le formulaire de contact.
 
 <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;">
     <p style="color: #000000; margin: 0;"><strong>Détails du message :</strong></p>
-    <p style="color: #000000; margin: 5px 0;">Nom : {{ $contact->name }}</p>
-    <p style="color: #000000; margin: 5px 0;">Email : {{ $contact->email }}</p>
-    <p style="color: #000000; margin: 5px 0;">Téléphone : {{ $contact->phone }}</p>
-    <p style="color: #000000; margin: 5px 0;">Entreprise : {{ $contact->company }}</p>
+    <p style="color: #000000; margin: 5px 0;">Nom : {{ $data['name'] }}</p>
+    <p style="color: #000000; margin: 5px 0;">Email : {{ $data['email'] }}</p>
+    <p style="color: #000000; margin: 5px 0;">Téléphone : {{ $data['phone'] }}</p>
+    <p style="color: #000000; margin: 5px 0;">Entreprise : {{ $data['company'] }}</p>
 </div>
 
 <div style="background-color: #ffffff; padding: 15px; border-radius: 5px; margin: 20px 0; border: 1px solid #eee;">
     <p style="color: #000000; margin: 0;"><strong>Message :</strong></p>
-    <p style="color: #000000; margin: 10px 0; line-height: 1.5;">{{ $contact->message }}</p>
+    <p style="color: #000000; margin: 10px 0; line-height: 1.5;">{{ $data['message'] }}</p>
 </div>
 
 <x-mail::button :url="'https://fleet-pay-front.vercel.app/admin/contacts'" color="primary">

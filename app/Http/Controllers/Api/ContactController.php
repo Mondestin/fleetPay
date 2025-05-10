@@ -19,9 +19,11 @@ class ContactController extends Controller
             'message' => 'required|string',
         ]);
 
+        $data = $request->all();
+        logger($data);
         try {
             $adminEmail = env('MAIL_TO_ADMIN');
-            Mail::to($adminEmail)->send(new ContactMail($request->all()));
+            Mail::to($adminEmail)->send(new ContactMail($data));
         } catch (\Exception $e) {
             logger($e->getMessage());
             return response()->json(['error' => 'Email n\'a pas été envoyé'], 500);
