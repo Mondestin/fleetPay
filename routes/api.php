@@ -12,11 +12,12 @@ use App\Http\Controllers\Api\SubscriptionController;
 use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\Api\DashboardController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\ContactController;
 
 // Public routes
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
-
+Route::post('/contact', [ContactController::class, 'contact']);
 // Protected routes
 Route::middleware('auth:sanctum')->group(function () {
     // Auth routes
