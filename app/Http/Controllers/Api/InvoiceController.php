@@ -61,14 +61,13 @@ class InvoiceController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
 
-        return response()->json($invoice->load(['user', 'createdBy']), 201);
+        return response()->json("Invoice created successfully", 201);
     }
 
     public function show(Request $request)
     {
         try {
            
-          
             //get all invoices for the user
             $invoices = Invoice::where('user_id', $request->invoice)->get();
             logger("invoices: " . $invoices);
