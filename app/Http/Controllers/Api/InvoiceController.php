@@ -40,7 +40,7 @@ class InvoiceController extends Controller
     {
         try {
             $validated = $request->validate([
-                'user_id' => 'required|exists:users,id',
+                'subscription_id' => 'required|exists:subscriptions,id',
                 'amount' => 'required|numeric|min:0',
                 'status' => ['required', Rule::in(['paid', 'pending', 'failed'])],
                 'issue_date' => 'required|date',
@@ -85,9 +85,9 @@ class InvoiceController extends Controller
 
     public function update(Request $request, Invoice $invoice)
     {
-      
+
         $validated = $request->validate([
-                'user_id' => 'required|exists:users,id',
+                'subscription_id' => 'required|exists:subscriptions,id',
                 'amount' => 'required|numeric|min:0',
                 'status' => ['required', Rule::in(['paid', 'pending', 'overdue'])],
                 'issue_date' => 'required|date',
@@ -95,14 +95,16 @@ class InvoiceController extends Controller
         ]);
 
         try {
-            $invoice = Invoice::findOrFail($request->invoice);
+            logger("finding the invoice: " . $request->invoice_number);
+            $invoice = Invoice::where('invoice_number', $request->invoice_number)->first();
+      
             $invoice->update($validated);
         } catch (\Exception $e) {
             logger($e->getMessage());
             return response()->json(['error' => $e->getMessage()], 500);
         }
 
-        return response()->json($invoice->load(['user', 'createdBy']));
+        return response()->json("Invoice updated successfully");
         
     }
 
