@@ -20,16 +20,31 @@ class UberImporter implements PlatformImporterInterface
         // First check by name
         foreach ($drivers as $existingDriver) {
             if (NameCheck::matchName($fullName, $existingDriver->full_name)) {
+                logger("match found");
+                logger($existingDriver);
                 $matchedDrivers[] = $existingDriver;
             }
         }
 
         // If exactly one match found, return that driver
         if (count($matchedDrivers) === 1) {
+            logger("one match found");
+            logger($matchedDrivers[0]);
             return $matchedDrivers[0];
         }
 
-        // Create new driver if no match found
+        // If multiple matches or no matches, try to find by email
+        if (!empty($driverData['email'])) {
+            $driverByEmail = Driver::where('email', $driverData['email'])->first();
+            if ($driverByEmail) {
+                // Found a driver with the same email, return it
+                logger("email match found");
+                logger($driverByEmail);
+                return $driverByEmail;
+            }
+        }
+
+        // Create new driver if no match found by name or email
         return Driver::create([
             'first_name' => $driverData['firstName'],
             'last_name' => $driverData['lastName'],

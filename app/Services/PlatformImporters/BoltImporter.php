@@ -25,12 +25,16 @@ class BoltImporter implements PlatformImporterInterface
         // First check by name
         foreach ($drivers as $existingDriver) {
             if (NameCheck::matchName($fullName, $existingDriver->full_name)) {
+                logger("match found");
+                logger($existingDriver);
                 $matchedDrivers[] = $existingDriver;
             }
         }
 
         // If exactly one match found, return that driver
         if (count($matchedDrivers) === 1) {
+            logger("one match found");
+            logger($matchedDrivers[0]);
             return $matchedDrivers[0];
         }
 
